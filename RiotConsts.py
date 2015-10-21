@@ -1,4 +1,4 @@
-# elements within brackets are similar to variables
+# elements within brackets are similar to variables, replaced with arguemnts
 URL = {
 	'base': 'https://{proxy}.api.pvp.net/api/lol/{region}/{url}',
 	'summoner_by_name': 'v{version}/summoner/by-name/{names}',
@@ -15,10 +15,16 @@ API_VERSIONS = {
 }
 
 REGIONS = {
+	'brazil': 'br',
 	'europe_nordic_and_east': 'eune',
 	'europe_west': 'euw',
+	'korea': 'kr',
+	'latin_america_north': 'lan',
+	'latin_america_south': 'las',
 	'north_america': 'na',
-	'korea': 'kr'
+	'oceana': 'oce',
+	'russia': 'ru',
+	'turkey': 'tr'
 }
 
 # used for current game request

@@ -38,6 +38,7 @@ class RiotAPI(object):
 	#retrieve info on a summoner using a name
 	def get_summoner_by_name(self, name):
 		api_url = Consts.URL['summoner_by_name'].format(
+			# assigning variables
 			version=Consts.API_VERSIONS['summoner'],
 			names=name
 		)
@@ -46,18 +47,19 @@ class RiotAPI(object):
 	# get player statistics (non ranked)
 	def get_player_stats(self, sumId):
 		api_url = Consts.URL['summoner_stats'].format(
+			# assigning variables
 			summonerId=sumId,
 			version=Consts.API_VERSIONS['summoner_stats']
 		)
 		return self._request(api_url)
 
-	# get player statistics (ranked)
+	# get player statistics (ranked), WIP
 	#def get_player_stats_ranked
 
 
 
 
-	# current game is a slightly different beast, its request is different
+	# current game is a slightly different beast, its request is different. Therefore it has its own class
 
 	# request for current game
 	def _request_current_game(self, api_url, params={}):
@@ -77,15 +79,16 @@ class RiotAPI(object):
 		# prints out the http request:
 		print ("\n")
 		print response.url
-		# return JSON dictionary. At this point we should parse for status codes (ex: 404 code)
+		# return JSON dictionary. At this point we should parse for status codes (ex: 404 code). In this scenario, if the summoner requested is not currently in a game, the program crashes (add a parser for this case).
 		return response.json()
 
 	# get info on current game
 	def get_current_game(self, sumId, platformId=Consts.PLATFORM_ID['north_america']):
 		api_url = Consts.URL['current_game'].format(
+			#assigning variables
 			version=Consts.API_VERSIONS['current_game'],
 			summonerId=sumId,
 			# currently hard coded to get NA summoners only, in future can add more regions
 			platformId='NA1'
 		)
-		return self._request_current_game(api_url)
+		return self._request_current_game(api_url) # unique, calls to a different request because the url is different.

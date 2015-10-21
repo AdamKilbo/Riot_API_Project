@@ -16,15 +16,15 @@ def main():
 	print ("enter your summoner name")
 	SumName = raw_input()
 
-	# get summoner info based on summoner name
+	# get summoner info based on summoner name. all info is stored as a JSON dictionary in the variable r
 	r = api.get_summoner_by_name(SumName)
 	print ("\nPrinting summoner info:")
 	print r # printing the whole JSON dictionary
 
-	# get current game info, WIP
+	# get current game info
 	# need to strip spaces for SumName for the correct key value in the returned JSON dictionary
 	SumName = SumName.replace(" ", "")
-	# grab the summoner's id
+	# grab the summoner's id from the previous request
 	sumId = r[SumName]['id']
 	# eventually, add a PlatformID variable so that other regions can use this program
 	r = api.get_current_game(sumId)
