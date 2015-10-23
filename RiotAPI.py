@@ -53,6 +53,15 @@ class RiotAPI(object):
 		)
 		return self._request(api_url)
 
+	# get recent game info. only returns info on individual summoner
+	def get_recent_games(self, sumId):
+		api_url = Consts.URL['recent_games'].format(
+			# assigning variables
+			summonerId=sumId,
+			version=Consts.API_VERSIONS['recent_games']
+		)
+		return self._request(api_url)
+
 	# get player statistics (ranked), WIP
 	#def get_player_stats_ranked
 
