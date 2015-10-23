@@ -46,9 +46,15 @@ def main():
 	# 123 champions currently.
 	NumberOfChampions = 123
 	# to keep track of a champion's win rate, we need to keep track of their Id, their wins, and total games. Win rate can be calculated for each champion with these stats
-	champId[NumberOfChampions]
-	win[NumberOfChampions]
-	games[NumberOfChampions]
+	ChampionId[NumberOfChampions]
+	ChampionWins[NumberOfChampions]
+	ChampionGames[NumberOfChampions]
+
+
+
+	###
+
+	Scrape_Info()
 
 	while (True)
 		r = api.get_recent_games(SumId)
@@ -56,16 +62,33 @@ def main():
 		MostRecentGame = False
 		MostRecentGameID = 0
 
+		i = 0 # this keeps track of which of the ten games were are analyzing. Since there may be aram or bot games in a match history, we are trying to remove those. 
+		# i is the iterator which keeps track of what element we are on. 
+		for Game, GameInfo in r.items():
+			for Key, Value in GamInfo.items():
+				if Key == 'gameMode':
+					if Value != 'Classic':
+						r.pop[i]
+				else if Key == 'subType':
+					# only counting the game towards our statistics if it is a normal or ranked game of any type
+					if Value != 'NORMAL' or 'NORMAL_5x5_BLIND' or 'NORMAL_5x5_DRAFT' or 'RANKED_SOLO_5x5' or 'RANKED_TEAM_5x5' or 'RANKED_PREMADE_5x5':
+						r.pop[i]
+				else
+					# this is a game we want to collect statistics on, do not delete it, move onto the next element in dictionary
+					i++
+
+		# the games that are left are ones we want to collect date from.
 		# scraping info from the JSON dictionary
 		for Game, GameInfo in r.items(): # for (key), (value of key in dictionary) in our dictionary:
-			if 
+			#check to see if the game played was normal or ranked on summoners rift
 			for key, value in gameInfo.items():
 				if key == 'gameId':
-					# check to see if we have pulled a game id. we only update MostRecentGameID with the first gameId encounteder because it will be the most recent game played.
-					if (MostRecentGame = False && )
+					# check to see if we have pulled a game id. we only update the first MostRecentGameID with the first gameId encountered because it will be the most recent game played.
+					if (MostRecentGame = False)
 						MostRecentGameID = value
 
 
+	###
 
 
 
