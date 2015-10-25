@@ -65,6 +65,17 @@ class RiotAPI(object):
 	# get player statistics (ranked), WIP
 	#def get_player_stats_ranked
 
+	# function to get champion name based on champion ID
+	def get_champion_name(self, ChampionId):
+		api_url = Consts.URL['champion_name'].format(
+			#assigning variables
+			championId=ChampionId,
+			version=Consts.API_VERSIONS['champion_name']
+		)
+		# only returning champion name, culling JSON dict for name only
+		returnedDict = self._request(api_url)
+		return returnedDict['name']
+
 
 
 

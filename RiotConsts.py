@@ -4,6 +4,8 @@ URL = {
 	'summoner_by_name': 'v{version}/summoner/by-name/{names}',
 	'summoner_stats': 'v{version}/stats/by-summoner/{summonerId}/summary',
 	'recent_games': 'v{version}/game/by-summoner/{summonerId}/recent',
+	#part of LoL Static Data
+	'champion_name': 'v{version}/champion/{championId}?champData=recommended',
 
 	'current_game_base': 'https://{proxy}.api.pvp.net/{url}',
 	'current_game': 'observer-mode/rest/consumer/getSpectatorGameInfo/{platformId}/{summonerId}'
@@ -13,7 +15,8 @@ API_VERSIONS = {
 	'summoner': '1.4',
 	'current_game': '1.0',
 	'summoner_stats': '1.3',
-	'recent_games': '1.3'
+	'recent_games': '1.3',
+	'champion_name': '1.2'
 }
 
 REGIONS = {
@@ -32,4 +35,8 @@ REGIONS = {
 # used for current game request
 PLATFORM_ID = {
 	'north_america': 'NA1'
+}
+
+CHAMPION_ID_AND_NAME = {
+
 }
