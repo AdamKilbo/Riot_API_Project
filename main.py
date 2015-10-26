@@ -63,34 +63,35 @@ def main():
 		MostRecentGame = False
 		MostRecentGameID = 0
 
-		#print r
 
-		i = 0 # this keeps track of which of the ten games were are analyzing. Since there may be aram or bot games in a match history, we are trying to remove those. 
-		# i is the iterator which keeps track of what element we are on. 
-		for Game, GameInfo in r.iteritems():
-			print Game
-			for InnerKey, InnerValue in r.iteritems():
-				print InnerKey
-				print 'check\n', Game
-				if InnerValue == 'gameMode':
-					print 'in gameMode'
-					if (InnerValue != 'Classic'):
-						r['games'].pop[i]
-				elif InnerValue == 'subType':
-					print 'in subType'
-					# only counting the game towards our statistics if it is a normal or ranked game of any type
-					if (InnerValue != 'NORMAL' or 'NORMAL_5x5_BLIND' or 'NORMAL_5x5_DRAFT' or 'RANKED_SOLO_5x5' or 'RANKED_TEAM_5x5' or 'RANKED_PREMADE_5x5'):
-						r['games'].pop[i]
-				else:
-					print "incrementing", i
-					# this is a game we want to collect statistics on, do not delete it, move onto the next element in dictionary
-					i += 1
-				if (InnerValue == 'championId'):
-					print("Champion Name: ", api.get_champion_name(InnerValue))	
+		# this keeps track of which of the ten games were are analyzing. Since there may be aram or bot games in a match history, we are trying to remove those. 
+		# i is the iterator which keeps track of what element we are on.
+		IgnoreElement = [False for i in range(0, 10)]
+		for i in range(0, 10):
+			e = r['games'][i]
+			for key, val in e.items():
+				if key == 'gameMode':
+					if val == 'CLASSIC':
+						# not a summoners rift variant we are interested in
+						IgnoreElement[i] = True
+				if key == 'subType':
+					if val == 'NORMAL' or val == 'RANKED_SOLO_5x5' or val == 'RANKED_TEAM_5x5':
+						# not normal or ranked. Could be other (ex: one for all, URF)
+						IgnoreElement[i] = True
+				if key == 'mapId':
+					if val != '11'
+						# not summoners rift
+						IgnoreElement[i] = True
+			
 
-		print ("Printing JSON (summonersrift, normal/ranked, classic):")
+
+
+
+		#if (Value == 'championId'):
+		#	print("Champion Name: ", api.get_champion_name(InnerValue))	
+
+		#print ("Printing JSON (summonersrift, normal/ranked, classic):")
 		#print json.dumps(r, indent = 2, sort_keys=False)
-		print i
 
 		return 0
 """
