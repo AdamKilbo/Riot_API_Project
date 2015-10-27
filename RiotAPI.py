@@ -1,5 +1,6 @@
 import requests
 import RiotConsts as Consts
+import time
 
 # no inheritance
 class RiotAPI(object): 
@@ -33,6 +34,7 @@ class RiotAPI(object):
 		print ("\n")
 		print response.url
 		# return JSON dictionary. At this point we should parse for status codes (ex: 404 code)
+		time.sleep(1.2) # the delay here is to make sure that I do not cross API request limits (10 per 10 secs, 500 per 10 minutes)
 		return response.json()
 
 	#retrieve info on a summoner using a name
@@ -65,6 +67,30 @@ class RiotAPI(object):
 	# get player statistics (ranked), WIP
 	#def get_player_stats_ranked
 
+
+	def _request_champion_name(self, api_url, params={}):
+		args = {'api_key': self.api_key}
+		# unpack params.items dictionary into key & value
+		for key, value in params.items():
+		 	if key not in args:
+		 		args[key] = value
+		response = requests.get(
+			Consts.URL['champion_name_base'].format(
+				# server you want to access for info
+				proxy=self.region,
+				# region to grab info from
+				region=self.region,
+				url=api_url
+				),
+			params=args 
+			)
+		# prints out the http request:
+		print ("\n")
+		print response.url
+		# return JSON dictionary. At this point we should parse for status codes (ex: 404 code)
+		# no delay here, does not count against rate limit
+		return response.json()
+
 	# function to get champion name based on champion ID
 	def get_champion_name(self, ChampionId):
 		api_url = Consts.URL['champion_name'].format(
@@ -73,8 +99,9 @@ class RiotAPI(object):
 			version=Consts.API_VERSIONS['champion_name']
 		)
 		# only returning champion name, culling JSON dict for name only
-		returnedDict = self._request(api_url)
-		return returnedDict['name']
+		returnedDict = self._request_champion_name(api_url)
+		#print returnedDict
+		return returnedDict
 
 
 
@@ -99,6 +126,7 @@ class RiotAPI(object):
 		# prints out the http request:
 		print ("\n")
 		print response.url
+		time.sleep(1.2) # delay to make sure we don't cross API limits (10 reqeusts per 10 secs, 500 per 10 minutes)
 		# return JSON dictionary. At this point we should parse for status codes (ex: 404 code). In this scenario, if the summoner requested is not currently in a game, the program crashes (add a parser for this case).
 		return response.json()
 

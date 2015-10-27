@@ -18,9 +18,9 @@ class JSONDictionary(object):
 # this class holds statistics on number of games each champion has played and won. By using these two numbers we can calculate winrate statistics
 class ChampionWinrateStatistics(object):
 
-	ChampionIDDictionary = []
-	ChampionWins = []
-	ChampionGames = []
+	ChampionIDDictionary = [None]*123
+	ChampionWins = [None]*123
+	ChampionGames = [None]*123
 
 	def DoesChampionExist(self, ChampionID):
 		if (self.ChampionIDDictionary[ChampionID]):
@@ -69,8 +69,8 @@ class ChampionWinrateStatistics(object):
 # by keeping track of their last game id that we have seen, we will not take duplicate game information.
 
 class PlayerDictionary(object):
-	PlayerIDArray = []
-	PlayerLastGameDictionary = []
+	PlayerIDArray = [None]*90000000 #how to store 60+ million is a problem. computer cannot handle 600 million when initializing this array
+	PlayerLastGameDictionary = [None]*90000000
 
 	# method to determine if we have encountered this player before
 	def DoesPlayerExist(self, SummonerID):
@@ -84,19 +84,22 @@ class PlayerDictionary(object):
 	# if a player is not in hash, store them and record most recent game
 	# by recording most recent game ID, if we encounter a summoner again we will not double count games we have seen before for our statistics.
 	def UpdatePlayer(self, SummonerID, MostRecentGameID):
-		if (self.PlayerIdArray[SummonerID]):
+		if (self.PlayerIDArray[SummonerID]):
 			# summoner seen before
 			print ("summoner seen before")
 			# update recent game id
 			self.PlayerLastGameDictionary[SummonerID] = MostRecentGameID
 		else:
 			# summoner not seen before
+			if SummonerID > 80000000:
+				print "problem, greater than 80 mil"
+
 			print ("summoner not seen before, adding to dictionary")
 			# add id to hash, update recent game id
 			self.PlayerIDArray[SummonerID] = SummonerID
 			self.PlayerLastGameDictionary[SummonerID] = MostRecentGameID
 
-	# return players most recent game ID
+	# return players most recent game IDa
 	def GetMostRecentMatchID(self, SummonerID):
 		# if player exists (we have encountered him before, then return his most recent game id
 		if (self.PlayerIDArray[SummonerID]):
@@ -124,7 +127,7 @@ class SummonerIDsToExplore(object):
 
 		if (SummonerID not in self.PlayerIDArray and self.ArrayTooBig == False):
 			self.PlayerIDArray.append(SummonerID)
-		print "current ID array: ", self.PlayerIDArray
+		#print "current ID array: ", self.PlayerIDArray
 
 	def GetSummonerIDToExplore(self):
 		SummonerID = self.PlayerIDArray.pop(0)

@@ -5,6 +5,7 @@ URL = {
 	'summoner_stats': 'v{version}/stats/by-summoner/{summonerId}/summary',
 	'recent_games': 'v{version}/game/by-summoner/{summonerId}/recent',
 	#part of LoL Static Data
+	'champion_name_base': 'https://global.api.pvp.net/api/lol/static-data/{region}/{url}',
 	'champion_name': 'v{version}/champion/{championId}?champData=recommended',
 
 	'current_game_base': 'https://{proxy}.api.pvp.net/{url}',
