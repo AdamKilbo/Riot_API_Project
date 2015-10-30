@@ -11,7 +11,7 @@ class JSONDictionary(object):
 	def PrintDictionary(self, Dictionary):
 		print json.dumps(self.JSONDict, indent = 2, sort_keys=False)
 
-	# prints any JSON passed as an argument
+	# prints any JSON passed as an argumentID
 	def PrintOtherDictionary(self, Dictionary):
 		print json.dumps(Dictionary, indent = 2, sort_keys=False)
 
@@ -52,6 +52,7 @@ class ChampionWinrateStatistics(object):
 				ChampionGames[ChampionID] += 1
 			games = self.ChampionGames[ChampionID]
 			wins = self.ChampionWins[ChampionID]
+			#print "Champion ID: ", ChampionID, " Champion Games: ", games, " Champion Wins: ", wins, " Winrate: ", wins/games
 			if games > 0 and games % 2 == 0:
 				ChampionInfoDict == api.get_champion_name(val)
 				print ChampionInfoDict['name'], " has ", games, "games, and ", wins, " wins. Leaving him with a ", wins/games, " percent win chance"
@@ -131,6 +132,9 @@ class SummonerIDsToExplore(object):
 			self.PlayerIDArray.insert(0, SummonerID)
 			# Not the most efficient algorithm, implement FIFO queue when I get the chance
 			#print "current ID array: ", self.PlayerIDArray
+		#if SummonerID in self.PlayerIDArray: #DEBUGGING IF
+			#ignoring summoner, id already in array and ready to explore
+			#print "summoner id in array already, ignoring"
 
 	def GetSummonerIDToExplore(self):
 		SummonerID = self.PlayerIDArray.pop()

@@ -80,22 +80,31 @@ def main():
 			for key, val in e.items():
 				if key == 'gameId':
 					if val <= HistoryMostRecentGameID:
+						print "ignoring b/c most recent game id", val, " On Record: ", HistoryMostRecentGameID
 						# ignore any games that we have seen before (values smaller than the summoner's most recent gameId in our records)
 						IgnoreElement[i] = True
 				if key == 'gameMode':
 					if val != 'CLASSIC':
+						print "ignoring b/c game mode (!= CLASSIC)", val
 						# not a summoners rift variant we are interested in
 						IgnoreElement[i] = True
 				if key == 'subType':
-					if val == 'NORMAL' or val == 'RANKED_SOLO_5x5' or val == 'RANKED_TEAM_5x5' and val != 'BOT':
+					if val != 'NORMAL' and val != 'RANKED_SOLO_5x5' and val != 'RANKED_TEAM_5x5':
+						print "ignoring b/c sub type (!= NORMAL/RANKED(TEAM/SOLO))", val
 						# not normal or ranked. Could be other (ex: one for all, URF)
 						IgnoreElement[i] = True
 				if key == 'mapId':
 					if val != 11: # note, this works without having 11 in quotes.
+						print "ignoring b/c map ID (!= 11)", val
 						# not summoners rift
 						IgnoreElement[i] = True
 
+		NumOfIgnores = 0
+		for i in range(0,10):
+			if IgnoreElement[i] == True:
+				NumOfIgnores += 1
 
+		print NumOfIgnores
 
 		# parse for info based on the games that meet our previous criteria
 		for i in range(0, 10):
@@ -106,7 +115,7 @@ def main():
 
 			for key, val in e.items():
 				if IgnoreElement[i] == False: # False means game meets our criteria, parsing for info.
-					if key == 'gameId' and val > HistoryMostRecentGameID: # condition to check for, make sure we don't double count games
+					#if key == 'gameId' and val > HistoryMostRecentGameID: # condition to check for, make sure we don't double count games
 						if key == 'gameId':
 							if MostRecentGame == False: 
 								# the first game id we encounter will be the most recent one. Therefore declare the bool MostRecentGame True upon reaching this loop
@@ -115,14 +124,25 @@ def main():
 								ClassPlayerDictionary.UpdatePlayer(SummonerId, val)
 						if key == 'championId':
 							if PlayerWin == True:
-								#### increment champ games and wins ####
-								ClassChampionWinrateStatistics.IncrementGames(val)
-								ClassChampionWinrateStatistics.IncrementWins(val)
-							else:
-								#### increment champ games ####
-								ClassChampionWinrateStatistics.IncrementGames(val)
-							ChampionInfoDict = api.get_champion_name(val)
-							print "Champion Name: ", ChampionInfoDict['name']
+								print "Player Won"
+								# increment champ games and wins
+								if ClassChampionWinrateStatistics.DoesChampionExist(val) == False:
+									ClassChampionWinrateStatistics.AddChampion(val)
+									ClassChampionWinrateStatistics.IncrementGames(val)
+									ClassChampionWinrateStatistics.IncrementWins(val)
+								elif ClassChampionWinrateStatistics.DoesChampionExist(val) == True:
+									ClassChampionWinrateStatistics.IncrementGames(val)
+									ClassChampionWinrateStatistics.IncrementWins(val)
+							elif PlayerWin == False:
+								print "Player Lost"
+								# increment champ games
+								if ClassChampionWinrateStatistics.DoesChampionExist(val) == False:
+									ClassChampionWinrateStatistics.AddChampion(val)
+									ClassChampionWinrateStatistics.IncrementGames(val)
+								elif ClassChampionWinrateStatistics.DoesChampionExist(val) == True:
+									ClassChampionWinrateStatistics.IncrementGames(val)
+							#ChampionInfoDict = api.get_champion_name(val)
+							#print "Champion Name: ", ChampionInfoDict['name']
 
 			# this will go through the fellow players dictionaries and scrape stats there
 			#if IgnoreElement[i] == False:
@@ -137,13 +157,15 @@ def main():
 							ClassSummonerIDsToExplore.AddIDToExplore(val)
 						# do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data
 				except IndexError:
+					pass
 					# this error may occur due to a game type that is not normal summoners rift (ex: bot games, custom games)
-					print ("index error, out of index, ignoring")
+					#print ("index error, out of index, ignoring")
 					#print json.dumps(r, indent = 2, sort_keys=False)
 					# do nothing
 				except KeyError:
+					pass
 					# this error may occur due to a game type that is not normal summoners rift (ex: bot games, custom games)
-					print ("key error, key not found, ignoring")
+					#print ("key error, key not found, ignoring")
 					#print json.dumps(r, indent = 2, sort_keys=False)
 					# do nothing
 
