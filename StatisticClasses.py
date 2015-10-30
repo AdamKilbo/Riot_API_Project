@@ -50,13 +50,18 @@ class ChampionWinrateStatistics(object):
 			if (self.ChampionGames[ChampionID]):
 			# if champion has been seen before, increment number of games by one
 				ChampionGames[ChampionID] += 1
+			games = self.ChampionGames[ChampionID]
+			wins = self.ChampionWins[ChampionID]
+			if games > 0 and (games % 100) == 0:
+				ChampionInfoDict == api.get_champion_name(val)
+				print ChampionInfoDict['name'], " has ", games, "games, and ", wins, " wins. Leaving him with a ", wins/games, " percent win chance"
 
 	def IncrementWins(self, ChampionID):
 		if (self.ChampionIDDictionary[ChampionID]):
 			if (self.ChampionWins[ChampionID]):
 			# if champion has been seen before, increment number of wins by one
 				self.ChampionWins[ChampionID] += 1
-				print("Champion win percentage for ", ChampionID, " is ", self.ChampionGames[ChampionID]/self.ChampionWins[ChampionID])
+				#print("Champion win percentage for ", ChampionID, " is ", self.ChampionGames[ChampionID]/self.ChampionWins[ChampionID])
 
 
 
@@ -103,8 +108,7 @@ class PlayerDictionary(object):
 
 
 class SummonerIDsToExplore(object):
-	# This bool is so that we stop adding player IDs after a certain array length is met.
-	ArrayTooBig = False
+	ArrayTooBig = False # This bool is so that we stop adding player IDs after a certain array length is met.
 	PlayerIDArray = [] # start empty, add IDs as the program progresses
 
 	def __init__(self):
@@ -114,16 +118,16 @@ class SummonerIDsToExplore(object):
 		ArraySize = len(self.PlayerIDArray)
 		# check to see if ID is in array, if yes, don't add it
 		# length of array capped at 1000 so that it does not expand infinitely
-		if (ArraySize > 500):
-			ArrayTooBig = True
+		if ArraySize > 500:
+			self.ArrayTooBig = True
 			print "too big, not accepting new data"
 			# set to true, let the array length fall for a while before adding more IDs
-		elif (ArraySize < 40):
-			ArrayTooBig = False
+		elif ArraySize < 40:
+			self.ArrayTooBig = False
 			print "too small, adding data"
 			# array length  has fallen enough, start adding more IDs
 
-		if (SummonerID not in self.PlayerIDArray and self.ArrayTooBig == False):
+		if (SummonerID not in self.PlayerIDArray) and (self.ArrayTooBig == False):
 			self.PlayerIDArray.insert(0, SummonerID)
 			# Not the most efficient algorithm, implement FIFO queue when I get the chance
 			#print "current ID array: ", self.PlayerIDArray

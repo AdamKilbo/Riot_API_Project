@@ -148,7 +148,6 @@ def main():
 			#if IgnoreElement[i] == False:
 			for j in range(0, 9): # 9 other players in the game assuming classical mode on summoner's rift
 				# f is a sub dictionary within r. makes parsing through it much easier
-				f = {}
 				try:
 					f = r['games'][i]['fellowPlayers'][j]
 					print f
@@ -160,6 +159,8 @@ def main():
 				except IndexError:
 					print ("error, out of index, ignoring")
 					#do nothing
+				except KeyError:
+					print ("key error, not found, ignoring")
 
 
 		#print ("Printing JSON (summonersrift, normal/ranked, classic):")
@@ -179,6 +180,8 @@ to do list:
 
 move the match history algorithm to another file
 implement queue for IDs in SummonerIDsToExplore
+
+bugs:
 
 
 """
