@@ -43,7 +43,7 @@ def main():
 	# 1) start with any summoner (id or name -> id) (GetSummonerIDToExplore)
 	# 2) get info on match history (ChampionWinrateStatistics)
 	# 	 - Record which champions were in game (champion id), whether or not that champion won, and increment the total games we have seen that particular champion in
-	# 3) store summoner id in dictionary. Additionally, keep info on that summoners latest game id (so if we encounter him again we dont recount games) (PlayerDictionary)
+	# 3) store summoner id in an array. Additionally, keep info on that summoners latest game id (so if we encounter him again we dont recount games) (PlayerDictionary)
 	# 4) get summoner id on each summoner in that particular game, repeat the above steps for each of them. (SummonerIDsToExplore)
 	#
 	"""
@@ -57,13 +57,19 @@ def main():
 
 	ClassSummonerIDsToExplore.AddIDToExplore(SummonerId)
 
-	while (True):
+	while True:
 		r = api.get_recent_games(ClassSummonerIDsToExplore.GetSummonerIDToExplore())
 
 		SummonerId = r['summonerId']
 
 		MostRecentGame = False
-		MostRecentGameID = 0
+		MostRecentGameID = 0 # the most recent game ID t
+		HistoryMostRecentGameID = 0 # if we have seen the summoner before then this stores their most recent game ID
+
+		# if we have seen this summoner before then pull their most recent match ID from our records
+		if ClassPlayerDictionary.DoesPlayerExist(SummonerId) == True:
+			HistoryMostRecentGameID = ClassPlayerDictionary.GetMostRecentMatchID(SummonerId)
+
 
 
 		# this keeps track of which of the ten games were are analyzing. Since there may be aram or bot games in a match history, we are trying to remove those. 
@@ -72,6 +78,10 @@ def main():
 		for i in range(0, 10):
 			e = r['games'][i]
 			for key, val in e.items():
+				if key == 'gameId':
+					if val <= HistoryMostRecentGameID:
+						# ignore any games that we have seen before (values smaller than the summoner's most recent gameId in our records)
+						IgnoreElement[i] = True
 				if key == 'gameMode':
 					if val != 'CLASSIC':
 						# not a summoners rift variant we are interested in
@@ -99,8 +109,8 @@ def main():
 				# Make this its own object. pass PlayerTeam, PlayerWin, Win100, Win200. return win100, win200.
 				PlayerTeam = e['teamId'] # a bool that will keep track of whether the game was a win or not
 				PlayerWin = e['stats']['win'] # a integer value that will keep track of which team the player was on
-				#Win100 # bool that keeps track of whether or not team ID 100 won
-				#Win200 # see above, team 200
+				Win100 = True # bool that keeps track of whether or not team ID 100 won
+				Win200 = True # see above, team 200
 
 
 				if PlayerWin == True:
@@ -135,7 +145,6 @@ def main():
 						print "Champion Name: ", ChampionInfoDict['name']
 					#### add collection of this player's win/loss on champ ####
 
-				print "yo"
 
 				# this will go through the fellow players dictionaries and scrape stats there
 				for j in range(0, 9): # 9 other players in the game assuming classical mode on summoner's rift
@@ -144,40 +153,30 @@ def main():
 					for key, val in f.items():
 						if key == 'summonerId':
 							ClassSummonerIDsToExplore.AddIDToExplore(val)
-						if key == 'championId':
-							ChampionInfoDict = api.get_champion_name(val)
-							print "Champion Name: ", ChampionInfoDict['name']
-						#### also collect champ winrate stats here on other player's champs in the game ####
+						#### do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data ####
 
 
-
-		#if (Value == 'championId'):
-		#print("Champion Name: ", api.get_champion_name(InnerValue))	
 
 		#print ("Printing JSON (summonersrift, normal/ranked, classic):")
 		#print json.dumps(r, indent = 2, sort_keys=False)
 
 		return 0
-"""
-
-		SummonerID = r['summonerId']
-		# the games that are left are ones we want to collect date from.
-		# scraping info from the JSON dictionary
-		for Game, GameInfo in r.items(): # for (key), (value of key in dictionary) in our dictionary:
-			#check to see if the game played was normal or ranked on summoners rift
-			for key, value in gameInfo.items():
-				if key == 'gameId':
-					# check to see if we have pulled a game id. we only update the first MostRecentGameID with the first gameId encountered because it will be the most recent game played.
-					if (MostRecentGame == False):
-						MostRecentGame = True
-						MostRecentGameID = value
-
-"""
 
 	### END WIP
 
 
+if __name__ == "__main__":
+	main()
 
+
+
+"""
+
+Code Graveyard:
+
+This is for snippets of code that I may use later but are currently unneeded
+
+	#print json.dumps(r, indent = 2, sort_keys=False)
 
 	# get current game info
 	# grab the summoner's id from the previous request
@@ -192,5 +191,22 @@ def main():
 	#print r
 
 
-if __name__ == "__main__":
-	main()
+
+	# here i was planning to collect win rates of other champs in the game, but without enough information i cannot ensure that all games are accounted for and that we are not double counting data
+	teamID # a int that keeps track of which team player is on
+	if key == 'teamId'
+		teamID = val
+	if key == 'championId':
+		champID = val
+		# update champion winrate statistics
+		if teamID == 100 and Win100 == True:
+			#increment wins and games
+		elif teamID == 100 and Win100 == False:
+			#increment games
+		elif teamID == 200 and Win200 == True:
+			#increment wins and games
+		elif teamID == 200 and Win200 == False:
+			#increment games
+		#ChampionInfoDict = api.get_champion_name(val)
+		#print "Champion Name: ", ChampionInfoDict['name']
+"""

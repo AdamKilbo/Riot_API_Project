@@ -17,10 +17,10 @@ class JSONDictionary(object):
 
 # this class holds statistics on number of games each champion has played and won. By using these two numbers we can calculate winrate statistics
 class ChampionWinrateStatistics(object):
-
-	ChampionIDDictionary = [None]*123
-	ChampionWins = [None]*123
-	ChampionGames = [None]*123
+	# each champion has a unique ID. However they are not 1-(current # of champs), instead they are non sequential. However no champ ID goes above 300, so we initialize arrays with the size of 300.
+	ChampionIDDictionary = [None]*300
+	ChampionWins = [None]*300
+	ChampionGames = [None]*300
 
 	def DoesChampionExist(self, ChampionID):
 		if (self.ChampionIDDictionary[ChampionID]):
@@ -42,15 +42,14 @@ class ChampionWinrateStatistics(object):
 
 	def AddChampion(self, ChampionID):
 		self.ChampionIDDictionary[ChampionID] = ChampionID
+		self.ChampionWins[ChampionID] = 0
+		self.ChampionGames[ChampionID] = 0
 
 	def IncrementGames(self, ChampionID):
 		if (self.ChampionIDDictionary[ChampionID]):
 			if (self.ChampionGames[ChampionID]):
 			# if champion has been seen before, increment number of games by one
 				ChampionGames[ChampionID] += 1
-			else:
-			# champion not seen before, initialize element
-				self.ChampionGames[ChampionID] = 1
 
 	def IncrementWins(self, ChampionID):
 		if (self.ChampionIDDictionary[ChampionID]):
@@ -58,9 +57,6 @@ class ChampionWinrateStatistics(object):
 			# if champion has been seen before, increment number of wins by one
 				self.ChampionWins[ChampionID] += 1
 				print("Champion win percentage for ", ChampionID, " is ", self.ChampionGames[ChampionID]/self.ChampionWins[ChampionID])
-			else:
-			# champion not seen before, initialize element
-				self.ChampionWins[ChampionID] = 1
 
 
 
