@@ -122,9 +122,10 @@ class SummonerIDsToExplore(object):
 			# array length  has fallen enough, start adding more IDs
 
 		if (SummonerID not in self.PlayerIDArray and self.ArrayTooBig == False):
-			self.PlayerIDArray.append(SummonerID)
-		#print "current ID array: ", self.PlayerIDArray
+			self.PlayerIDArray.insert(0, SummonerID)
+			# Not the most efficient algorithm, implement queue when I get the chance
+			print "current ID array: ", self.PlayerIDArray
 
 	def GetSummonerIDToExplore(self):
-		SummonerID = self.PlayerIDArray.pop(0)
+		SummonerID = self.PlayerIDArray.pop()
 		return SummonerID

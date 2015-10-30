@@ -13,7 +13,7 @@ def main():
 	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO
 	#
 
-	api = RiotAPI('') # Your API key goes inbetween the blank quotes.
+	api = RiotAPI('b0319960-8f8a-4211-a79f-a11f09979bf7') # Your API key goes inbetween the blank quotes.
 
 	#
 	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO
@@ -99,40 +99,41 @@ def main():
 
 		# parse for info based on the games that meet our previous criteria
 		for i in range(0, 10):
-			if IgnoreElement[i] == False: # False means game meets our criteria, parsing for info
+			# e is a sub dictionary within r, makes parsing through it much easier
+			e = r['games'][i]
 
-				# e is a sub dictionary within r, makes parsing through it much easier
-				e = r['games'][i]
-
-				###
-				# This block will determine which team won (team 100 or 200) and set the bools accordingly
-				# Make this its own object. pass PlayerTeam, PlayerWin, Win100, Win200. return win100, win200.
-				PlayerTeam = e['teamId'] # a bool that will keep track of whether the game was a win or not
-				PlayerWin = e['stats']['win'] # a integer value that will keep track of which team the player was on
-				Win100 = True # bool that keeps track of whether or not team ID 100 won
-				Win200 = True # see above, team 200
+			###
+			# This block will determine which team won (team 100 or 200) and set the bools accordingly
+			# Make this its own object. pass PlayerTeam, PlayerWin, Win100, Win200. return win100, win200.
+			PlayerTeam = e['teamId'] # a bool that will keep track of whether the game was a win or not
+			PlayerWin = e['stats']['win'] # a integer value that will keep track of which team the player was on
+			Win100 = True # bool that keeps track of whether or not team ID 100 won
+			Win200 = True # see above, team 200
 
 
-				if PlayerWin == True:
-					if PlayerTeam == 100: # if player was on team 100 and won, then team 100 won
-						Win100 = True
-						Win200 = False
-					else:                   # else team 200 won
-						Win100 = False
-						Win200 = True
+			if PlayerWin == True:
+				if PlayerTeam == 100: # if player was on team 100 and won, then team 100 won
+					Win100 = True
+					Win200 = False
+				else:                   # else team 200 won
+					Win100 = False
+					Win200 = True
 
-				elif PlayerWin == False:
-					if PlayerTeam == 100: # team 100 lost, set bools accordingly
-						Win100 = False
-						Win200 = True
-					else:					# team 200 lost, set bools accordingly
-						Win100 = True
-						Win200 = False
-				else:
-					print "Error determining player winning"
-				###
+			elif PlayerWin == False:
+				if PlayerTeam == 100: # team 100 lost, set bools accordingly
+					Win100 = False
+					Win200 = True
+				else:					# team 200 lost, set bools accordingly
+					Win100 = True
+					Win200 = False
+			else:
+				print "Error determining player winning"
+			###
 
-				for key, val in e.items():
+			print "###yo1###"
+
+			for key, val in e.items():
+				if IgnoreElement[i] == False: # False means game meets our criteria, parsing for info.
 					if key == 'gameId':
 						if MostRecentGame == False: 
 							# the first game id we encounter will be the most recent one. Therefore declare the bool MostRecentGame True upon reaching this loop
@@ -145,29 +146,41 @@ def main():
 						print "Champion Name: ", ChampionInfoDict['name']
 					#### add collection of this player's win/loss on champ ####
 
-
-				# this will go through the fellow players dictionaries and scrape stats there
-				for j in range(0, 9): # 9 other players in the game assuming classical mode on summoner's rift
-					# f is a sub dictionary within r. makes parsing through it much easier
-					f = r['games'][i]['fellowPlayers'][j]
-					for key, val in f.items():
-						if key == 'summonerId':
-							ClassSummonerIDsToExplore.AddIDToExplore(val)
-						#### do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data ####
+			print "###yo###"
+			# this will go through the fellow players dictionaries and scrape stats there
+			for j in range(0, 9): # 9 other players in the game assuming classical mode on summoner's rift
+				# f is a sub dictionary within r. makes parsing through it much easier
+				f = r['games'][i]['fellowPlayers'][j]
+				print f
+				for key, val in f.items():
+					if key == 'summonerId':
+						print "inserting ID: ", val
+						ClassSummonerIDsToExplore.AddIDToExplore(val)
+					#### do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data ####
 
 
 
 		#print ("Printing JSON (summonersrift, normal/ranked, classic):")
 		#print json.dumps(r, indent = 2, sort_keys=False)
 
+		
 		return 0
 
 	### END WIP
+	return 0
 
 
 if __name__ == "__main__":
 	main()
 
+"""
+to do list: 
+
+move the match history algorithm to another file
+implement queue for IDs in SummonerIDsToExplore
+
+
+"""
 
 
 """
