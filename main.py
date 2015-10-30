@@ -130,7 +130,6 @@ def main():
 				print "Error determining player winning"
 			###
 
-			print "###yo1###"
 
 			for key, val in e.items():
 				if IgnoreElement[i] == False: # False means game meets our criteria, parsing for info.
@@ -144,27 +143,29 @@ def main():
 					if key == 'championId':
 						ChampionInfoDict = api.get_champion_name(val)
 						print "Champion Name: ", ChampionInfoDict['name']
-					#### add collection of this player's win/loss on champ ####
 
-			print "###yo###"
 			# this will go through the fellow players dictionaries and scrape stats there
+			#if IgnoreElement[i] == False:
 			for j in range(0, 9): # 9 other players in the game assuming classical mode on summoner's rift
 				# f is a sub dictionary within r. makes parsing through it much easier
-				f = r['games'][i]['fellowPlayers'][j]
-				print f
-				for key, val in f.items():
-					if key == 'summonerId':
-						print "inserting ID: ", val
-						ClassSummonerIDsToExplore.AddIDToExplore(val)
-					#### do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data ####
-
+				f = {}
+				try:
+					f = r['games'][i]['fellowPlayers'][j]
+					print f
+					for key, val in f.items():
+						if key == 'summonerId':
+							print "inserting ID: ", val
+							ClassSummonerIDsToExplore.AddIDToExplore(val)
+						#### do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data ####
+				except IndexError:
+					print ("error, out of index, ignoring")
+					#do nothing
 
 
 		#print ("Printing JSON (summonersrift, normal/ranked, classic):")
 		#print json.dumps(r, indent = 2, sort_keys=False)
 
 		
-		return 0
 
 	### END WIP
 	return 0

@@ -116,15 +116,17 @@ class SummonerIDsToExplore(object):
 		# length of array capped at 1000 so that it does not expand infinitely
 		if (ArraySize > 500):
 			ArrayTooBig = True
+			print "too big, not accepting new data"
 			# set to true, let the array length fall for a while before adding more IDs
-		elif (ArraySize < 20):
+		elif (ArraySize < 40):
 			ArrayTooBig = False
+			print "too small, adding data"
 			# array length  has fallen enough, start adding more IDs
 
 		if (SummonerID not in self.PlayerIDArray and self.ArrayTooBig == False):
 			self.PlayerIDArray.insert(0, SummonerID)
-			# Not the most efficient algorithm, implement queue when I get the chance
-			print "current ID array: ", self.PlayerIDArray
+			# Not the most efficient algorithm, implement FIFO queue when I get the chance
+			#print "current ID array: ", self.PlayerIDArray
 
 	def GetSummonerIDToExplore(self):
 		SummonerID = self.PlayerIDArray.pop()
