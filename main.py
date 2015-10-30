@@ -87,7 +87,7 @@ def main():
 						# not a summoners rift variant we are interested in
 						IgnoreElement[i] = True
 				if key == 'subType':
-					if val == 'NORMAL' or val == 'RANKED_SOLO_5x5' or val == 'RANKED_TEAM_5x5':
+					if val == 'NORMAL' or val == 'RANKED_SOLO_5x5' or val == 'RANKED_TEAM_5x5' and val != 'BOT':
 						# not normal or ranked. Could be other (ex: one for all, URF)
 						IgnoreElement[i] = True
 				if key == 'mapId':
@@ -102,47 +102,27 @@ def main():
 			# e is a sub dictionary within r, makes parsing through it much easier
 			e = r['games'][i]
 
-			###
-			# This block will determine which team won (team 100 or 200) and set the bools accordingly
-			# Make this its own object. pass PlayerTeam, PlayerWin, Win100, Win200. return win100, win200.
-			PlayerTeam = e['teamId'] # a bool that will keep track of whether the game was a win or not
-			PlayerWin = e['stats']['win'] # a integer value that will keep track of which team the player was on
-			Win100 = True # bool that keeps track of whether or not team ID 100 won
-			Win200 = True # see above, team 200
-
-
-			if PlayerWin == True:
-				if PlayerTeam == 100: # if player was on team 100 and won, then team 100 won
-					Win100 = True
-					Win200 = False
-				else:                   # else team 200 won
-					Win100 = False
-					Win200 = True
-
-			elif PlayerWin == False:
-				if PlayerTeam == 100: # team 100 lost, set bools accordingly
-					Win100 = False
-					Win200 = True
-				else:					# team 200 lost, set bools accordingly
-					Win100 = True
-					Win200 = False
-			else:
-				print "Error determining player winning"
-			###
-
+			PlayerWin = e['stats']['win'] # a bool value that will keep track whether or not the player won
 
 			for key, val in e.items():
 				if IgnoreElement[i] == False: # False means game meets our criteria, parsing for info.
-					if key == 'gameId':
-						if MostRecentGame == False: 
-							# the first game id we encounter will be the most recent one. Therefore declare the bool MostRecentGame True upon reaching this loop
-							MostRecentGame = True
-							#### to add: update player w/ game id ####
-							# val = gameID
-							ClassPlayerDictionary.UpdatePlayer(SummonerId, val)
-					if key == 'championId':
-						ChampionInfoDict = api.get_champion_name(val)
-						print "Champion Name: ", ChampionInfoDict['name']
+					if key == 'gameId' and val > HistoryMostRecentGameID: # condition to check for, make sure we don't double count games
+						if key == 'gameId':
+							if MostRecentGame == False: 
+								# the first game id we encounter will be the most recent one. Therefore declare the bool MostRecentGame True upon reaching this loop
+								MostRecentGame = True
+								# updating summoner's most recent game
+								ClassPlayerDictionary.UpdatePlayer(SummonerId, val)
+						if key == 'championId':
+							if PlayerWin == True:
+								#### increment champ games and wins ####
+								ClassChampionWinrateStatistics.IncrementGames(val)
+								ClassChampionWinrateStatistics.IncrementWins(val)
+							else:
+								#### increment champ games ####
+								ClassChampionWinrateStatistics.IncrementGames(val)
+							ChampionInfoDict = api.get_champion_name(val)
+							print "Champion Name: ", ChampionInfoDict['name']
 
 			# this will go through the fellow players dictionaries and scrape stats there
 			#if IgnoreElement[i] == False:
@@ -150,17 +130,22 @@ def main():
 				# f is a sub dictionary within r. makes parsing through it much easier
 				try:
 					f = r['games'][i]['fellowPlayers'][j]
-					print f
+					#print f
 					for key, val in f.items():
 						if key == 'summonerId':
-							print "inserting ID: ", val
+							#print "inserting ID: ", val
 							ClassSummonerIDsToExplore.AddIDToExplore(val)
-						#### do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data ####
+						# do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data
 				except IndexError:
-					print ("error, out of index, ignoring")
-					#do nothing
+					# this error may occur due to a game type that is not normal summoners rift (ex: bot games, custom games)
+					print ("index error, out of index, ignoring")
+					#print json.dumps(r, indent = 2, sort_keys=False)
+					# do nothing
 				except KeyError:
-					print ("key error, not found, ignoring")
+					# this error may occur due to a game type that is not normal summoners rift (ex: bot games, custom games)
+					print ("key error, key not found, ignoring")
+					#print json.dumps(r, indent = 2, sort_keys=False)
+					# do nothing
 
 
 		#print ("Printing JSON (summonersrift, normal/ranked, classic):")
@@ -178,10 +163,12 @@ if __name__ == "__main__":
 """
 to do list: 
 
+anything with #### on either side
 move the match history algorithm to another file
 implement queue for IDs in SummonerIDsToExplore
 
 bugs:
+
 
 
 """
@@ -207,6 +194,34 @@ This is for snippets of code that I may use later but are currently unneeded
 	#print ("\nPrinting out summoner stats:")
 	#print r
 
+	###
+	# here i was planning to determine which team won when i planned to count other player's champion wins in the same game. no longer needed.
+	# This block will determine which team won (team 100 or 200) and set the bools accordingly
+	# Make this its own object. pass PlayerTeam, PlayerWin, Win100, Win200. return win100, win200.
+	PlayerTeam = e['teamId'] # a bool that will keep track of whether the game was a win or not
+	PlayerWin = e['stats']['win'] # a integer value that will keep track of which team the player was on
+	Win100 = True # bool that keeps track of whether or not team ID 100 won
+	Win200 = True # see above, team 200
+
+
+	if PlayerWin == True:
+		if PlayerTeam == 100: # if player was on team 100 and won, then team 100 won
+			Win100 = True
+			Win200 = False
+		else:                   # else team 200 won
+			Win100 = False
+			Win200 = True
+
+	elif PlayerWin == False:
+		if PlayerTeam == 100: # team 100 lost, set bools accordingly
+			Win100 = False
+			Win200 = True
+		else:					# team 200 lost, set bools accordingly
+			Win100 = True
+			Win200 = False
+	else:
+		print "Error determining player winning"
+	###
 
 
 	# here i was planning to collect win rates of other champs in the game, but without enough information i cannot ensure that all games are accounted for and that we are not double counting data

@@ -18,9 +18,9 @@ class JSONDictionary(object):
 # this class holds statistics on number of games each champion has played and won. By using these two numbers we can calculate winrate statistics
 class ChampionWinrateStatistics(object):
 	# each champion has a unique ID. However they are not 1-(current # of champs), instead they are non sequential. However no champ ID goes above 300, so we initialize arrays with the size of 300.
-	ChampionIDDictionary = [None]*300
-	ChampionWins = [None]*300
-	ChampionGames = [None]*300
+	ChampionIDDictionary = [None]*500
+	ChampionWins = [None]*500
+	ChampionGames = [None]*500
 
 	def DoesChampionExist(self, ChampionID):
 		if (self.ChampionIDDictionary[ChampionID]):
@@ -52,7 +52,7 @@ class ChampionWinrateStatistics(object):
 				ChampionGames[ChampionID] += 1
 			games = self.ChampionGames[ChampionID]
 			wins = self.ChampionWins[ChampionID]
-			if games > 0 and (games % 100) == 0:
+			if games > 0 and games % 2 == 0:
 				ChampionInfoDict == api.get_champion_name(val)
 				print ChampionInfoDict['name'], " has ", games, "games, and ", wins, " wins. Leaving him with a ", wins/games, " percent win chance"
 
@@ -120,11 +120,11 @@ class SummonerIDsToExplore(object):
 		# length of array capped at 1000 so that it does not expand infinitely
 		if ArraySize > 500:
 			self.ArrayTooBig = True
-			print "too big, not accepting new data"
+			#print "too big, not accepting new data"
 			# set to true, let the array length fall for a while before adding more IDs
 		elif ArraySize < 40:
 			self.ArrayTooBig = False
-			print "too small, adding data"
+			#print "too small, adding data"
 			# array length  has fallen enough, start adding more IDs
 
 		if (SummonerID not in self.PlayerIDArray) and (self.ArrayTooBig == False):
