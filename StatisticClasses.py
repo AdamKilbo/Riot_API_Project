@@ -18,9 +18,9 @@ class JSONDictionary(object):
 # this class holds statistics on number of games each champion has played and won. By using these two numbers we can calculate winrate statistics
 class ChampionWinrateStatistics(object):
 	# each champion has a unique ID. However they are not 1-(current # of champs), instead they are non sequential. However no champ ID goes above 300, so we initialize arrays with the size of 300.
-	ChampionIDDictionary = [None]*500
-	ChampionWins = [None]*500
-	ChampionGames = [None]*500
+	ChampionIDDictionary = [0]*500
+	ChampionWins = [0]*500
+	ChampionGames = [0]*500
 
 	def DoesChampionExist(self, ChampionID):
 		if (self.ChampionIDDictionary[ChampionID]):

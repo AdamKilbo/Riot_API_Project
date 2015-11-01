@@ -99,11 +99,11 @@ def main():
 						# not summoners rift
 						IgnoreElement[i] = True
 
+		# this little blurb will count how many games we are ignoring
 		NumOfIgnores = 0
 		for i in range(0,10):
 			if IgnoreElement[i] == True:
 				NumOfIgnores += 1
-
 		print NumOfIgnores
 
 		# parse for info based on the games that meet our previous criteria
@@ -126,21 +126,12 @@ def main():
 							if PlayerWin == True:
 								print "Player Won"
 								# increment champ games and wins
-								if ClassChampionWinrateStatistics.DoesChampionExist(val) == False:
-									ClassChampionWinrateStatistics.AddChampion(val)
-									ClassChampionWinrateStatistics.IncrementGames(val)
-									ClassChampionWinrateStatistics.IncrementWins(val)
-								elif ClassChampionWinrateStatistics.DoesChampionExist(val) == True:
-									ClassChampionWinrateStatistics.IncrementGames(val)
-									ClassChampionWinrateStatistics.IncrementWins(val)
+								ClassChampionWinrateStatistics.IncrementGames(val)
+								ClassChampionWinrateStatistics.IncrementWins(val)
 							elif PlayerWin == False:
 								print "Player Lost"
 								# increment champ games
-								if ClassChampionWinrateStatistics.DoesChampionExist(val) == False:
-									ClassChampionWinrateStatistics.AddChampion(val)
-									ClassChampionWinrateStatistics.IncrementGames(val)
-								elif ClassChampionWinrateStatistics.DoesChampionExist(val) == True:
-									ClassChampionWinrateStatistics.IncrementGames(val)
+								ClassChampionWinrateStatistics.IncrementGames(val)
 							#ChampionInfoDict = api.get_champion_name(val)
 							#print "Champion Name: ", ChampionInfoDict['name']
 
