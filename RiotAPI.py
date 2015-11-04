@@ -7,6 +7,7 @@ class RiotAPI(object):
 
 	# if no regions are specified, automatically chose north_america
 	def __init__(self, api_key, region=Consts.REGIONS['north_america']):
+
 		# initializing variables
 		# your api key
 		self.api_key = api_key
@@ -15,6 +16,7 @@ class RiotAPI(object):
 
 	# if no paramaters specified, params is empty
 	def _request(self, api_url, params={}):
+
 		args = {'api_key': self.api_key}
 		# unpack params.items dictionary into key & value
 		for key, value in params.items():
@@ -39,6 +41,7 @@ class RiotAPI(object):
 
 	#retrieve info on a summoner using a name
 	def get_summoner_by_name(self, name):
+
 		api_url = Consts.URL['summoner_by_name'].format(
 			# assigning variables
 			version=Consts.API_VERSIONS['summoner'],
@@ -48,6 +51,7 @@ class RiotAPI(object):
 
 	# get player statistics (non ranked)
 	def get_player_stats(self, sumId):
+
 		api_url = Consts.URL['summoner_stats'].format(
 			# assigning variables
 			summonerId=sumId,
@@ -57,6 +61,7 @@ class RiotAPI(object):
 
 	# get recent game info. only returns info on individual summoner
 	def get_recent_games(self, sumId):
+
 		api_url = Consts.URL['recent_games'].format(
 			# assigning variables
 			summonerId=sumId,
@@ -69,6 +74,7 @@ class RiotAPI(object):
 
 
 	def _request_champion_name(self, api_url, params={}):
+
 		args = {'api_key': self.api_key}
 		# unpack params.items dictionary into key & value
 		for key, value in params.items():
@@ -93,6 +99,7 @@ class RiotAPI(object):
 
 	# function to get champion name based on champion ID
 	def get_champion_name(self, ChampionId):
+
 		api_url = Consts.URL['champion_name'].format(
 			#assigning variables
 			championId=ChampionId,
@@ -104,12 +111,11 @@ class RiotAPI(object):
 		return returnedDict
 
 
-
-
 	# current game is a slightly different beast, its request is different. Therefore it has its own class
 
 	# request for current game
 	def _request_current_game(self, api_url, params={}):
+
 		args = {'api_key': self.api_key}
 		# unpack params.items dictionary into key & value
 		for key, value in params.items():
@@ -132,6 +138,7 @@ class RiotAPI(object):
 
 	# get info on current game
 	def get_current_game(self, sumId, platformId=Consts.PLATFORM_ID['north_america']):
+
 		api_url = Consts.URL['current_game'].format(
 			#assigning variables
 			version=Consts.API_VERSIONS['current_game'],
