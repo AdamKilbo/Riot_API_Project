@@ -13,19 +13,18 @@ def main():
 	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO
 	#
 
-	api = RiotAPI('b0319960-8f8a-4211-a79f-a11f09979bf7') # Your API key goes inbetween the blank quotes.
+	api = RiotAPI('') # Your API key goes inbetween the blank quotes. if you forget to remove your api key, generate a new one.
 
 	#
 	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO
 	#
 
 	print ("enter your summoner name")
-	SumName = 'golden foxes'#raw_input() currently 'golden foxes' for debuggin faster
+	SumName = 'golden foxes'#raw_input() currently 'golden foxes' for debugging faster
 	# get summoner info based on summoner name. all info is stored as a JSON dictionary in the variable r
 	r = api.get_summoner_by_name(SumName) 
 	#print ("\nPrinting summoner info:")
-	#the json.dumps function formats the print of the JSON dict
-	#print json.dumps(r, indent = 2, sort_keys=False) # printing the whole JSON dictionary
+	print json.dumps(r, indent = 2, sort_keys=False) # printing the whole JSON dictionary
 
 	# riot uses the summoner name w/o spaces as a key value in its JSON dictionaries. Since we no longer need the space, taking it out.
 	SumName = SumName.replace(" ", "")
@@ -76,6 +75,7 @@ def main():
 		# i is the iterator which keeps track of what element we are on.
 		IgnoreElement = [False for i in range(0, 10)]
 		for i in range(0, 10):
+
 			e = r['games'][i]
 			for key, val in e.items():
 				if key == 'gameId':
@@ -85,29 +85,30 @@ def main():
 						IgnoreElement[i] = True
 				if key == 'gameMode':
 					if val != 'CLASSIC':
-						print "ignoring b/c game mode (!= CLASSIC)", val
+						#print "ignoring b/c game mode (!= CLASSIC)", val
 						# not a summoners rift variant we are interested in
 						IgnoreElement[i] = True
 				if key == 'subType':
 					if val != 'NORMAL' and val != 'RANKED_SOLO_5x5' and val != 'RANKED_TEAM_5x5':
-						print "ignoring b/c sub type (!= NORMAL/RANKED(TEAM/SOLO))", val
+						#print "ignoring b/c sub type (!= NORMAL/RANKED(TEAM/SOLO))", val
 						# not normal or ranked. Could be other (ex: one for all, URF)
 						IgnoreElement[i] = True
 				if key == 'mapId':
 					if val != 11: # note, this works without having 11 in quotes.
-						print "ignoring b/c map ID (!= 11)", val
+						#print "ignoring b/c map ID (!= 11)", val
 						# not summoners rift
 						IgnoreElement[i] = True
 
-		# this little blurb will count how many games we are ignoring
-		NumOfIgnores = 0
-		for i in range(0,10):
-			if IgnoreElement[i] == True:
-				NumOfIgnores += 1
-		print NumOfIgnores
+		# this little blurb will count how many games we are ignoring. debugging.
+		#NumOfIgnores = 0
+		#for i in range(0,10):
+		#	if IgnoreElement[i] == True:
+		#		NumOfIgnores += 1
+		#print NumOfIgnores
 
 		# parse for info based on the games that meet our previous criteria
 		for i in range(0, 10):
+
 			# e is a sub dictionary within r, makes parsing through it much easier
 			e = r['games'][i]
 
@@ -128,10 +129,12 @@ def main():
 								# increment champ games and wins
 								ClassChampionWinrateStatistics.IncrementGames(val)
 								ClassChampionWinrateStatistics.IncrementWins(val)
+								ClassChampionWinrateStatistics.PrintWinrateStatistics(val)
 							elif PlayerWin == False:
 								print "Player Lost"
 								# increment champ games
 								ClassChampionWinrateStatistics.IncrementGames(val)
+								ClassChampionWinrateStatistics.PrintWinrateStatistics(val)
 							#ChampionInfoDict = api.get_champion_name(val)
 							#print "Champion Name: ", ChampionInfoDict['name']
 
@@ -151,22 +154,15 @@ def main():
 					pass
 					# this error may occur due to a game type that is not normal summoners rift (ex: bot games, custom games)
 					#print ("index error, out of index, ignoring")
-					#print json.dumps(r, indent = 2, sort_keys=False)
 					# do nothing
 				except KeyError:
 					pass
 					# this error may occur due to a game type that is not normal summoners rift (ex: bot games, custom games)
 					#print ("key error, key not found, ignoring")
-					#print json.dumps(r, indent = 2, sort_keys=False)
 					# do nothing
 
+	### END WIP ###
 
-		#print ("Printing JSON (summonersrift, normal/ranked, classic):")
-		#print json.dumps(r, indent = 2, sort_keys=False)
-
-		
-
-	### END WIP
 	return 0
 
 
@@ -181,6 +177,8 @@ move the match history algorithm to another file
 implement queue for IDs in SummonerIDsToExplore
 
 bugs:
+
+not printing out champion winrate
 
 
 

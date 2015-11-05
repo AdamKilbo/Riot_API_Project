@@ -7,7 +7,7 @@ JSONDictionary: Currently unused, Holds a JSON dictionary, makes it easier to pa
  needed.
 
 ChampionWinrateStatistics: A class that has two arrays. One array holds the amount of games that a certain champion 
- was seen in. The other array holds the amount of wins that the champion has. By knowing these two number we can 
+ was seen in. The other array holds the amount of wins that the champion has. By knowing these two numbers we can 
  calculate the champion's winrate.
  
 PlayerDictionary: A class that holds all of the summoner IDs that we have explored. It holds an array that tells us
@@ -49,59 +49,42 @@ class JSONDictionary(object):
 class ChampionWinrateStatistics(object):
 	
 	# each champion has a unique ID. However they are not 1-(current # of champs), instead they are non sequential. However no champ ID goes above 300, so we initialize arrays with the size of 300.
-	ChampionIDDictionary = [0]*500
 	ChampionWins = [0]*500
 	ChampionGames = [0]*500
 
-	def DoesChampionExist(self, ChampionID):
-		
-		if (self.ChampionIDDictionary[ChampionID]):
-			return True
-		else:
-			return False
-
 	def ReturnGames(self, ChampionID):
 		
-		if (self.ChampionGames(ChampionID)):
-			return self,ChampionGames[ChampionID]
-		else:
-			return 0
+		return self.ChampionGames[ChampionID]
 
 	def ReturnWins(self, ChampionID):
 		
-		if (self.ChampionWins[ChampionID]):
-			return self.ChampionWins[ChampionID]
-		else:
-			return 0
-
-	def AddChampion(self, ChampionID):
-		
-		self.ChampionIDDictionary[ChampionID] = ChampionID
-		self.ChampionWins[ChampionID] = 0
-		self.ChampionGames[ChampionID] = 0
+		return self.ChampionWins[ChampionID]
 
 	def IncrementGames(self, ChampionID):
 		
-		if (self.ChampionIDDictionary[ChampionID]):
-			if (self.ChampionGames[ChampionID]):
-			# if champion has been seen before, increment number of games by one
-				ChampionGames[ChampionID] += 1
-			games = self.ChampionGames[ChampionID]
-			wins = self.ChampionWins[ChampionID]
-			#print "Champion ID: ", ChampionID, " Champion Games: ", games, " Champion Wins: ", wins, " Winrate: ", wins/games
-			if games > 0 and games % 2 == 0:
-				ChampionInfoDict == api.get_champion_name(val)
-				print ChampionInfoDict['name'], " has ", games, "games, and ", wins, " wins. Leaving him with a ", wins/games, " percent win chance"
+		ChampionGames[ChampionID] += 1
+
+		# print winrate info
+		games = self.ChampionGames[ChampionID]
+		wins = self.ChampionWins[ChampionID]
+		print "Games: ", games
+		print "Wins: ", wins
+		#print "Champion ID: ", ChampionID, " Champion Games: ", games, " Champion Wins: ", wins, " Winrate: ", wins/games
+		if games > 0:
+			ChampionInfoDict == api.get_champion_name(val)
+			print ChampionInfoDict['name'], " has ", games, "games, and ", wins, " wins. Leaving him with a ", wins/games, " percent win chance"
 
 	def IncrementWins(self, ChampionID):
 		
-		if (self.ChampionIDDictionary[ChampionID]):
-			if (self.ChampionWins[ChampionID]):
-			# if champion has been seen before, increment number of wins by one
-				self.ChampionWins[ChampionID] += 1
-				#print("Champion win percentage for ", ChampionID, " is ", self.ChampionGames[ChampionID]/self.ChampionWins[ChampionID])
+		self.ChampionWins[ChampionID] += 1
+		#print("Champion win percentage for ", ChampionID, " is ", self.ChampionGames[ChampionID]/self.ChampionWins[ChampionID])
 
+	def PrintWinrateStatistics(self, ChampionID):
 
+		games = self.ChampionGames[ChampionID]
+		wins = self.ChampionWins[ChampionID]
+		if games > 0:
+			print "champion: ", ChampionID, ", winrate: ", wins/games, " percent"
 
 
 # This class holds a hash table for keeping track of which players we have seen and their last game id.
