@@ -13,7 +13,7 @@ def main():
 	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO
 	#
 
-	api = RiotAPI('') # Your API key goes inbetween the blank quotes. if you forget to remove your api key, generate a new one.
+	api = RiotAPI('5b62dca2-b2ac-4f75-950a-3fa497841837') # Your API key goes inbetween the blank quotes. if you forget to remove your api key, generate a new one.
 
 	#
 	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO
@@ -172,9 +172,9 @@ if __name__ == "__main__":
 """
 to do list: 
 
-anything with #### on either side
+shorter class names and variables that reference the class
 move the match history algorithm to another file
-implement queue for IDs in SummonerIDsToExplore
+implement other options for this program, champion winrate statistics should be one feature of many
 
 bugs:
 
