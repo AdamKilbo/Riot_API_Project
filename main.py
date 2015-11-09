@@ -115,31 +115,35 @@ def main():
 			PlayerWin = e['stats']['win'] # a bool value that will keep track whether or not the player won
 
 			for key, val in e.items():
+
 				if IgnoreElement[i] == False: # False means game meets our criteria, parsing for info.
 					#if key == 'gameId' and val > HistoryMostRecentGameID: # condition to check for, make sure we don't double count games
+
 						if key == 'gameId':
 							if MostRecentGame == False: 
 								# the first game id we encounter will be the most recent one. Therefore declare the bool MostRecentGame True upon reaching this loop
 								MostRecentGame = True
 								# updating summoner's most recent game
 								ClassPlayerDictionary.UpdatePlayer(SummonerId, val)
+
 						if key == 'championId':
+							ChampionInfoDict = api.get_champion_name(val)
+							print "Champion Name: ", ChampionInfoDict['name']
+
 							if PlayerWin == True:
 								print "Player Won"
 								# increment champ games and wins
 								ClassChampionWinrateStatistics.IncrementGames(val)
 								ClassChampionWinrateStatistics.IncrementWins(val)
-								ClassChampionWinrateStatistics.PrintWinrateStatistics(val)
+
 							elif PlayerWin == False:
 								print "Player Lost"
 								# increment champ games
 								ClassChampionWinrateStatistics.IncrementGames(val)
-								ClassChampionWinrateStatistics.PrintWinrateStatistics(val)
-							#ChampionInfoDict = api.get_champion_name(val)
-							#print "Champion Name: ", ChampionInfoDict['name']
+
 
 			# this will go through the fellow players dictionaries and scrape stats there
-			#if IgnoreElement[i] == False:
+
 			for j in range(0, 9): # 9 other players in the game assuming classical mode on summoner's rift
 				# f is a sub dictionary within r. makes parsing through it much easier
 				try:
@@ -147,14 +151,16 @@ def main():
 					#print f
 					for key, val in f.items():
 						if key == 'summonerId':
-							#print "inserting ID: ", val
+							# adding id to explore later (val)
 							ClassSummonerIDsToExplore.AddIDToExplore(val)
 						# do not collect champ winrate stats here on other player's champs in the game. We cannot ensure we are not double counting or that we account for all possible data
+
 				except IndexError:
 					pass
 					# this error may occur due to a game type that is not normal summoners rift (ex: bot games, custom games)
 					#print ("index error, out of index, ignoring")
 					# do nothing
+
 				except KeyError:
 					pass
 					# this error may occur due to a game type that is not normal summoners rift (ex: bot games, custom games)
@@ -170,11 +176,12 @@ if __name__ == "__main__":
 	main()
 
 """
+
 to do list: 
 
 shorter class names and variables that reference the class
+
 move the match history algorithm to another file
-implement other options for this program, champion winrate statistics should be one feature of many
 
 bugs:
 
@@ -184,15 +191,39 @@ not printing out champion winrate
 
 """
 
+"""
+Reflections on current program:
+
+This program does have some limitations due to how it was built
+and the information given by the Riot API. For example, being
+unable to pull the date of the game means I could be collecting
+data on previous patches. Since the program is a crawler and not
+looking for the newest game ID's, I cannot determine if I am 
+looking at the newest game or going way back in LoL match history
+and grabbing irrelevent information, similar to how I don't know
+what patch each game is taking place on. 
+
+This program would be great if I could build external files to
+hold data already collected, such as champion winrates and most
+recent game IDs for summoners. That way, I can have persistnet data
+over multiple runs of the program instead of having to build the
+data every time I start the program again. 
+"""
+
 
 """
 
 Code Graveyard:
 
-This is for snippets of code that I may use later but are currently unneeded
+This is for snippets of code that I may use later but are currently unneeded. Each snippet is in between ### markers
 
+
+###
 	#print json.dumps(r, indent = 2, sort_keys=False)
+###
 
+
+###
 	# get current game info
 	# grab the summoner's id from the previous request
 	# eventually, add a PlatformID variable so that other regions can use this program
@@ -204,52 +235,30 @@ This is for snippets of code that I may use later but are currently unneeded
 	#r = api.get_player_stats(sumId)
 	#print ("\nPrinting out summoner stats:")
 	#print r
-
-	###
-	# here i was planning to determine which team won when i planned to count other player's champion wins in the same game. no longer needed.
-	# This block will determine which team won (team 100 or 200) and set the bools accordingly
-	# Make this its own object. pass PlayerTeam, PlayerWin, Win100, Win200. return win100, win200.
-	PlayerTeam = e['teamId'] # a bool that will keep track of whether the game was a win or not
-	PlayerWin = e['stats']['win'] # a integer value that will keep track of which team the player was on
-	Win100 = True # bool that keeps track of whether or not team ID 100 won
-	Win200 = True # see above, team 200
+###
 
 
-	if PlayerWin == True:
-		if PlayerTeam == 100: # if player was on team 100 and won, then team 100 won
-			Win100 = True
-			Win200 = False
-		else:                   # else team 200 won
-			Win100 = False
-			Win200 = True
+###
+	# a class that holds a JSON dictionary, since python doesn't have pointers we use a class whose value we can manipulate from different locations and have persistent data changes
 
-	elif PlayerWin == False:
-		if PlayerTeam == 100: # team 100 lost, set bools accordingly
-			Win100 = False
-			Win200 = True
-		else:					# team 200 lost, set bools accordingly
-			Win100 = True
-			Win200 = False
-	else:
-		print "Error determining player winning"
-	###
+class JSONDictionary(object):
+	
+	def __init__(self, Dict):
+		
+		self.JSONDict = Dict
 
+	def ReturnDictionary(self):
+		
+		return JSONDict
 
-	# here i was planning to collect win rates of other champs in the game, but without enough information i cannot ensure that all games are accounted for and that we are not double counting data
-	teamID # a int that keeps track of which team player is on
-	if key == 'teamId'
-		teamID = val
-	if key == 'championId':
-		champID = val
-		# update champion winrate statistics
-		if teamID == 100 and Win100 == True:
-			#increment wins and games
-		elif teamID == 100 and Win100 == False:
-			#increment games
-		elif teamID == 200 and Win200 == True:
-			#increment wins and games
-		elif teamID == 200 and Win200 == False:
-			#increment games
-		#ChampionInfoDict = api.get_champion_name(val)
-		#print "Champion Name: ", ChampionInfoDict['name']
+	# prints this class' self.JSONDict
+	def PrintDictionary(self, Dictionary):
+		
+		print json.dumps(self.JSONDict, indent = 2, sort_keys=False)
+
+	# prints any JSON passed as an argumentID
+	def PrintOtherDictionary(self, Dictionary):
+		
+		print json.dumps(Dictionary, indent = 2, sort_keys=False)
+###
 """

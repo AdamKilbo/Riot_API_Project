@@ -1,47 +1,24 @@
 ##########################################################################################################################
-"""
-
-StatisticClasses.py, a file that holds class definitions for classes that collect statistics.
-
-JSONDictionary: Currently unused, Holds a JSON dictionary, makes it easier to pass a JSON dictionary to where it is 
- needed.
-
-ChampionWinrateStatistics: A class that has two arrays. One array holds the amount of games that a certain champion 
- was seen in. The other array holds the amount of wins that the champion has. By knowing these two numbers we can 
- calculate the champion's winrate.
- 
-PlayerDictionary: A class that holds all of the summoner IDs that we have explored. It holds an array that tells us
- the most recent match that the summoner has competed in (ranked, or normal summoners rift). By knowing the most recent
- match we will avoid double counting games if we encounter the summoner again.
-
-SummonerIDsToExplore: A class that holds an array of summoner IDs. When prompted, it will either put a summoner ID that
- we encountered into the array, or give us a summoner ID for us to explore for match history information.
-
-"""
+#
+#
+# StatisticClasses.py, a file that holds class definitions for classes that collect statistics.
+#
+# JSONDictionary: Currently unused, Holds a JSON dictionary, makes it easier to pass a JSON dictionary to where it is 
+#  needed.
+#
+# ChampionWinrateStatistics: A class that has two arrays. One array holds the amount of games that a certain champion 
+#  was seen in. The other array holds the amount of wins that the champion has. By knowing these two numbers we can 
+#  calculate the champion's winrate.
+# 
+# PlayerDictionary: A class that holds all of the summoner IDs that we have explored. It holds an array that tells us
+#  the most recent match that the summoner has competed in (ranked, or normal summoners rift). By knowing the most recent
+#  match we will avoid double counting games if we encounter the summoner again.
+#
+# SummonerIDsToExplore: A class that holds an array of summoner IDs. When prompted, it will either put a summoner ID that
+#  we encountered into the array, or give us a summoner ID for us to explore for match history information.
+#
+#
 ##########################################################################################################################
-
-
-# a class that holds a JSON dictionary, since python doesn't have pointers we use a class whose value we can manipulate from different locations and have persistent data changes
-
-class JSONDictionary(object):
-	
-	def __init__(self, Dict):
-		
-		self.JSONDict = Dict
-
-	def ReturnDictionary(self):
-		
-		return JSONDict
-
-	# prints this class' self.JSONDict
-	def PrintDictionary(self, Dictionary):
-		
-		print json.dumps(self.JSONDict, indent = 2, sort_keys=False)
-
-	# prints any JSON passed as an argumentID
-	def PrintOtherDictionary(self, Dictionary):
-		
-		print json.dumps(Dictionary, indent = 2, sort_keys=False)
 
 
 # This class holds statistics on number of games each champion has played and won. By using these two numbers we can calculate winrate statistics
@@ -62,22 +39,16 @@ class ChampionWinrateStatistics(object):
 
 	def IncrementGames(self, ChampionID):
 		
-		ChampionGames[ChampionID] += 1
+		self.ChampionGames[ChampionID] += 1
 
 		# print winrate info
 		games = self.ChampionGames[ChampionID]
 		wins = self.ChampionWins[ChampionID]
-		print "Games: ", games
-		print "Wins: ", wins
-		#print "Champion ID: ", ChampionID, " Champion Games: ", games, " Champion Wins: ", wins, " Winrate: ", wins/games
-		if games > 0:
-			ChampionInfoDict == api.get_champion_name(val)
-			print ChampionInfoDict['name'], " has ", games, "games, and ", wins, " wins. Leaving him with a ", wins/games, " percent win chance"
+		print "Champion Id: ", ChampionID, " has ", games, " games and ", wins, " wins"
 
 	def IncrementWins(self, ChampionID):
 		
 		self.ChampionWins[ChampionID] += 1
-		#print("Champion win percentage for ", ChampionID, " is ", self.ChampionGames[ChampionID]/self.ChampionWins[ChampionID])
 
 	def PrintWinrateStatistics(self, ChampionID):
 
