@@ -10,23 +10,23 @@ ClassPlayerDictionary = StatisticClasses.PlayerDictionary()
 def main():
 
 	#
-	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO
+	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO. IMMEDIATELY REQUEST A NEW KEY IF YOU FORGET.
 	#
 
-	api = RiotAPI('5b62dca2-b2ac-4f75-950a-3fa497841837') # Your API key goes inbetween the blank quotes. if you forget to remove your api key, generate a new one.
+	api = RiotAPI('') # Your API key goes inbetween the blank quotes. if you forget to remove your api key, generate a new one.
 
 	#
-	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO
+	# REMEMBER TO REMOVE YOUR API KEY WHEN YOU PUSH REPO. IMMEDIATELY REQUEST A NEW KEY IF YOU FORGET.
 	#
 
 	print ("enter your summoner name")
-	SumName = 'golden foxes'#raw_input() currently 'golden foxes' for debugging faster
+	SumName = raw_input()
 	# get summoner info based on summoner name. all info is stored as a JSON dictionary in the variable r
 	r = api.get_summoner_by_name(SumName) 
 	#print ("\nPrinting summoner info:")
 	print json.dumps(r, indent = 2, sort_keys=False) # printing the whole JSON dictionary
 
-	# riot uses the summoner name w/o spaces as a key value in its JSON dictionaries. Since we no longer need the space, taking it out.
+	# riot uses the summoner name w/o spaces as a key value in its JSON dictionaries. Since we no longer need the space, we take it out.
 	SumName = SumName.replace(" ", "")
 	# grab the summoner id from the json dictionary
 	SummonerId = r[SumName]['id']
@@ -48,7 +48,7 @@ def main():
 	"""
 
 
-	### WIP. This is likely to be its own function in a separate file
+	### This is likely to be its own function in a separate file
 
 	# This function crawls for champion winrate info. 
 
@@ -71,8 +71,7 @@ def main():
 
 
 
-		# this keeps track of which of the ten games were are analyzing. Since there may be aram or bot games in a match history, we are trying to remove those. 
-		# i is the iterator which keeps track of what element we are on.
+		# This will keep track of what games in the match history we want to ignore. Since there may be aram or bot games in a match history, we are trying to remove those from our win rate analysis. 
 		IgnoreElement = [False for i in range(0, 10)]
 		for i in range(0, 10):
 
@@ -99,12 +98,6 @@ def main():
 						# not summoners rift
 						IgnoreElement[i] = True
 
-		# this little blurb will count how many games we are ignoring. debugging.
-		#NumOfIgnores = 0
-		#for i in range(0,10):
-		#	if IgnoreElement[i] == True:
-		#		NumOfIgnores += 1
-		#print NumOfIgnores
 
 		# parse for info based on the games that meet our previous criteria
 		for i in range(0, 10):
@@ -142,7 +135,7 @@ def main():
 								ClassChampionWinrateStatistics.IncrementGames(val)
 
 
-			# this will go through the fellow players dictionaries and scrape stats there
+			# this will go through the fellow players dictionaries and scrape summoner IDs so that we can run this whole loop on those IDs as well.
 
 			for j in range(0, 9): # 9 other players in the game assuming classical mode on summoner's rift
 				# f is a sub dictionary within r. makes parsing through it much easier
@@ -167,7 +160,7 @@ def main():
 					#print ("key error, key not found, ignoring")
 					# do nothing
 
-	### END WIP ###
+	### END FUNCTION
 
 	return 0
 
@@ -182,6 +175,8 @@ to do list:
 shorter class names and variables that reference the class
 
 move the match history algorithm to another file
+
+remove amount of prints to terminal, it looks ugly. Currently useful for debugging but once i confirm it is working I need to remove some of the unneeded stuff
 
 bugs:
 

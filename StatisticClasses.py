@@ -82,13 +82,14 @@ class PlayerDictionary(object):
 		
 		if (self.PlayerIDArray[SummonerID]):
 			# summoner seen before
-			print ("summoner seen before")
+			#print ("summoner seen before")
 			# update recent game id
 			self.PlayerLastGameDictionary[SummonerID] = MostRecentGameID
 		else:
 			# summoner not seen before
 			if SummonerID > 80000000:
 				print "problem, greater than 80 mil"
+				# So far I have not seen any summoner ID's greater than the number above. If the above message prints out then increase the size of the player ID array.
 
 			print ("summoner not seen before, adding to dictionary")
 			# add id to hash, update recent game id
